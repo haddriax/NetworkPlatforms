@@ -19,7 +19,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Editor Helpers")
 	UStaticMeshComponent* EDITORONLY_EndLocationPreview;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Helpers")
+	UPROPERTY(EditAnywhere, Category = "Helpers")
 	uint8 bEDITORONLY_ShowDebug	;
 #endif
 
@@ -30,10 +30,13 @@ protected:
 	FVector ToLocation;
 
 	UPROPERTY(VisibleAnywhere, Category = "Plateform Movement")
-	uint8 bReverse;
+	bool bReverse;
 
 	UPROPERTY(VisibleAnywhere, Category = "Plateform Movement")
 	FVector MovementDirection;
+
+	UPROPERTY(EditAnywhere, Category = "Plateform Movement")
+	float MovementSpeed;
 public:
 	ALineMovingPlatform();
 

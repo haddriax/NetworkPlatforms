@@ -10,6 +10,7 @@ ALineMovingPlatform::ALineMovingPlatform()
 
 	FromLocation = FVector(000, 0, 0);
 	ToLocation = FVector(100, 0, 0);
+	MovementSpeed = 100.0f;
 
 #if WITH_EDITOR
 	EDITORONLY_EndLocationPreview = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EDITORONLY_EndLocationPreview"));
@@ -17,6 +18,7 @@ ALineMovingPlatform::ALineMovingPlatform()
 	EDITORONLY_EndLocationPreview->SetIsReplicated(false);
 	EDITORONLY_EndLocationPreview->SetStaticMesh(StaticMesh->GetStaticMesh());
 	EDITORONLY_EndLocationPreview->SetRelativeLocationAndRotation(ToLocation, StaticMesh->GetRelativeRotation());
+	EDITORONLY_EndLocationPreview->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WireframeMat(TEXT("/Game/Materials/M_Wireframe"));;
 	if (WireframeMat.Succeeded())
@@ -55,7 +57,6 @@ void ALineMovingPlatform::PostEditChangeProperty(FPropertyChangedEvent& e)
 
 void ALineMovingPlatform::PostInitializeComponents()
 {
-
 	Super::PostInitializeComponents();
 }
 
@@ -99,10 +100,11 @@ void ALineMovingPlatform::Tick(float DeltaTime)
 void ALineMovingPlatform::ClientMove(float DeltaTime)
 {
 	constexpr float InterpolationSpeed = 100.0f;
-	SetActorLocation(FMath::VInterpTo(GetActorLocation(), ServerLocation, DeltaTime, InterpolationSpeed));
+	// SetActorLocation(FMath::VInterpTo(GetActorLocation(), ServerLocation, DeltaTime, InterpolationSpeed));
+	AddActorWorldOffset(GetActorLocation() - FMath::VInterpTo(GetActorLocation(), ServerLocation, DeltaTime, InterpolationSpeed));
 }
 
 void ALineMovingPlatform::ServerMove(float DeltaTime)
 {
-
+	StaticMesh->SetWorldLocation(StaticMesh->GetComponentLocation() + MovementDirection * DeltaTime * MovementSpeed);
 }
